@@ -12,7 +12,7 @@ run docker-compose
 ```
 $ docker-compose up -d
 ```
-Ports used
+**Ports used**
 | Service  | Port |
 | ------------- | :---: |
 | http  | 80  |
