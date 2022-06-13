@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+  mariadb:
+    image: docker.io/bitnami/mariadb:10.6
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    environment:
+      - MARIADB_ROOT_USER=root
+      - MARIADB_ROOT_PASSWORD=< your database password >
+      - MARIADB_DATABASE=maria_db
+    volumes:
+      - /data/marisdb:/etc/mysql/conf.d
+    restart: always
+
+  laravel:
+    image: docker.io/bitnami/laravel:9
+    container_name: laravel
+    ports:
+      - "80:8000"
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=< your database password >
+      - DB_DATABASE=maria_db
+    volumes:
+      - /data/laravel:/app
+    restart: always
+    depends_on:
+      - mariadb
+
+  pure-ftpd:
+    image: stilliard/pure-ftpd
+    container_name: pure-ftpd
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    environment:
+      - FTP_USER_NAME=< your ftp user >
+      - FTP_USER_PASS=< your ftp password >
+      - FTP_USER_HOME=/home/laravel
+    volumes:
+      - /data/laravel:/home/laravel
+    restart: always
